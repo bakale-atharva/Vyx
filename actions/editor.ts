@@ -14,14 +14,19 @@ import {
 } from "@/lib/editor/recipe";
 import { getUrlEndpoint, signUrl } from "@/lib/imagekit/server";
 
-const PREVIEW_TTL_SECONDS = 60 * 60;
+const URL_TTL_SECONDS = 60 * 60;
+const HLS_SUFFIX = "/ik-master.m3u8";
 
 /**
- * Sign a preview URL for a recipe. Every step is checked against the user's
- * live plan (`has`) before anything is signed, so a locked tool can never be
- * previewed, however the request was crafted.
+ * Sign a URL for a recipe. Every step is checked against the user's live plan
+ * (`has`) before anything is signed, so a locked tool can never be rendered,
+ * however the request was crafted.
  */
-export async function getPreviewUrl(assetId: string, recipe: unknown) {
+async function signRecipeUrl(
+  assetId: string,
+  recipe: unknown,
+  options: { attachment: boolean },
+) {
   const { userId, has, getToken } = await auth.protect();
   const token = await getToken({ template: "convex" });
   if (!token) return { error: "INVALID", message: "Not signed in" } as const;
@@ -57,12 +62,21 @@ export async function getPreviewUrl(assetId: string, recipe: unknown) {
       message: err instanceof Error ? err.message : "Invalid recipe",
     } as const;
   }
+  if (options.attachment && built.pathSuffix === HLS_SUFFIX) {
+    return {
+      error: "INVALID",
+      message: "A streaming playlist can't be downloaded",
+    } as const;
+  }
 
   const url = signUrl({
     src: asset.filePath + (built.pathSuffix ?? ""),
     transformation: built.transformation,
-    queryParameters: built.queryParameters,
-    expiresIn: PREVIEW_TTL_SECONDS,
+    queryParameters: {
+      ...built.queryParameters,
+      ...(options.attachment ? { "ik-attachment": "true" } : {}),
+    },
+    expiresIn: URL_TTL_SECONDS,
   });
 
   // Defense in depth: re-derive the needed features from the URL itself, so a
@@ -72,10 +86,10 @@ export async function getPreviewUrl(assetId: string, recipe: unknown) {
     userId,
   });
   if (!check.ok) {
-    console.error("Built preview URL failed validation:", check.reason);
+    console.error("Built URL failed validation:", check.reason);
     return {
       error: "INVALID",
-      message: "Could not build a valid preview",
+      message: "Could not build a valid URL",
     } as const;
   }
   const lockedByUrl = firstLockedFeature(has, check.features);
@@ -83,4 +97,18 @@ export async function getPreviewUrl(assetId: string, recipe: unknown) {
 
   const isAsync = parsed.steps.some((s) => OPERATIONS_BY_ID[s.opId]?.async);
   return { url, async: isAsync } as const;
+}
+
+/** Signed URL for previewing a recipe in the editor. */
+export async function getPreviewUrl(assetId: string, recipe: unknown) {
+  return signRecipeUrl(assetId, recipe, { attachment: false });
+}
+
+/**
+ * Signed download URL (`ik-attachment=true`) for a recipe. An empty recipe
+ * downloads the original. This is also how audio extraction is delivered,
+ * since audio can't be saved to the gallery.
+ */
+export async function getDownloadUrl(assetId: string, recipe: unknown) {
+  return signRecipeUrl(assetId, recipe, { attachment: true });
 }

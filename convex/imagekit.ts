@@ -79,15 +79,17 @@ export const signUrl = internalAction({
   args: {
     src: v.string(),
     transformation: v.optional(v.array(v.any())),
+    queryParameters: v.optional(v.record(v.string(), v.string())),
     expiresIn: v.number(),
   },
-  handler: async (_ctx, { src, transformation, expiresIn }) => {
+  handler: async (_ctx, { src, transformation, queryParameters, expiresIn }) => {
     const urlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT;
     if (!urlEndpoint) throw new Error("IMAGEKIT_URL_ENDPOINT is not set");
     return getClient().helper.buildSrc({
       urlEndpoint,
       src,
       transformation,
+      queryParameters,
       signed: true,
       expiresIn,
     });

@@ -10,4 +10,6 @@ crons.interval(
   {},
 );
 
+crons.interval("prune old edit jobs", { hours: 24 }, internal.edits.pruneOld, {});
+
 export default crons;
