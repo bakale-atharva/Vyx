@@ -38,11 +38,15 @@ export const list = query({
 });
 
 export const get = query({
-  args: { assetId: v.id("assets") },
+  // A plain string so callers holding an untrusted id (URL params, recipe
+  // overlays) need no cast; a malformed or foreign id simply returns null.
+  args: { assetId: v.string() },
   handler: async (ctx, { assetId }) => {
     const user = await getCurrentUser(ctx);
     if (!user) return null;
-    const asset = await ctx.db.get("assets", assetId);
+    const id = ctx.db.normalizeId("assets", assetId);
+    if (!id) return null;
+    const asset = await ctx.db.get("assets", id);
     return asset && asset.ownerId === user._id ? asset : null;
   },
 });
