@@ -26,16 +26,19 @@ export function getUrlEndpoint() {
 export function signUrl({
   src,
   transformation,
+  queryParameters,
   expiresIn,
 }: {
   src: string;
   transformation?: Transformation[];
+  queryParameters?: Record<string, string>;
   expiresIn: number;
 }) {
   return getImageKit().helper.buildSrc({
     urlEndpoint: getUrlEndpoint(),
     src,
     transformation,
+    queryParameters,
     signed: true,
     expiresIn,
   });
