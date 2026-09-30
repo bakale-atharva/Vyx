@@ -8,16 +8,26 @@ import {
   internalQuery,
   query,
 } from "./_generated/server";
-import { ASSET_LIMITS } from "./lib/plans";
 import {
-  PLAN_BASED_VIOLATIONS,
-  isInUserRoot,
-  validateUpload,
-} from "./lib/validateUpload";
-import { assetKindValidator } from "./schema";
+  overlayAssetIds,
+  parseRecipe,
+  recipeToTransformations,
+  requiredFeatures,
+} from "../lib/editor/recipe";
+import { OPERATIONS_BY_ID } from "../lib/editor/operations";
+import {
+  editFileName,
+  hasFormatStep,
+  resolveOutputFormat,
+} from "./lib/editNaming";
+import { insertAsset } from "./lib/insertAsset";
+import { planHasFeature, type Plan } from "./lib/plans";
+import { validateStoredFile } from "./lib/storedFile";
+import { assetInsertFields, assetKindValidator } from "./schema";
 import { getCurrentUser } from "./users";
 
 const EMPTY_PAGE = { page: [], isDone: true, continueCursor: "" };
+const HLS_SUFFIX = "/ik-master.m3u8";
 
 export const list = query({
   args: {
@@ -61,31 +71,8 @@ export const getByFileId = internalQuery({
 });
 
 export const insert = internalMutation({
-  args: {
-    ownerId: v.id("users"),
-    kind: assetKindValidator,
-    fileId: v.string(),
-    filePath: v.string(),
-    name: v.string(),
-    mime: v.string(),
-    size: v.number(),
-    width: v.optional(v.number()),
-    height: v.optional(v.number()),
-    duration: v.optional(v.number()),
-    parentAssetId: v.optional(v.id("assets")),
-    recipe: v.optional(v.any()),
-  },
-  handler: async (ctx, args) => {
-    const owner = await ctx.db.get("users", args.ownerId);
-    if (!owner) throw new Error("Owner not found");
-    // Re-checked inside the transaction so concurrent uploads can't overshoot.
-    if (owner.assetCount >= ASSET_LIMITS[owner.plan]) {
-      throw new ConvexError({ code: "QUOTA_ASSETS" });
-    }
-    const id = await ctx.db.insert("assets", { ...args, createdAt: Date.now() });
-    await ctx.db.patch("users", owner._id, { assetCount: owner.assetCount + 1 });
-    return id;
-  },
+  args: assetInsertFields,
+  handler: async (ctx, args) => await insertAsset(ctx, args),
 });
 
 export const remove = internalMutation({
@@ -128,37 +115,12 @@ export const register = action({
       return existing._id;
     }
 
-    const file = await ctx.runAction(internal.imagekit.getFileDetails, { fileId });
-    if (!file) throw new ConvexError({ code: "FILE_NOT_FOUND" });
-
-    const check = (plan: typeof user.plan) =>
-      validateUpload(file, { clerkId, kind, plan, assetCount: user.assetCount });
-
-    let violation = check(user.plan);
-    if (violation && PLAN_BASED_VIOLATIONS.has(violation)) {
-      // The stored plan comes from a webhook and may lag behind an upgrade.
-      try {
-        const livePlan = await ctx.runAction(
-          internal.billing.refreshPlanFromClerk,
-          { clerkId },
-        );
-        violation = check(livePlan);
-      } catch (err) {
-        console.error("Live plan refresh failed:", err);
-      }
-    }
-
-    // Only delete files inside the caller's own tree; never a foreign fileId.
-    const deleteIfOwned = async () => {
-      if (isInUserRoot(file.filePath, clerkId)) {
-        await ctx.runAction(internal.imagekit.deleteFile, { fileId });
-      }
-    };
-
-    if (violation) {
-      await deleteIfOwned();
-      throw new ConvexError({ code: violation });
-    }
+    const { file, deleteIfOwned } = await validateStoredFile(ctx, {
+      user,
+      clerkId,
+      fileId,
+      kind,
+    });
 
     try {
       return await ctx.runMutation(internal.assets.insert, {
@@ -181,13 +143,16 @@ export const register = action({
 });
 
 export const getForOwner = internalQuery({
-  args: { assetId: v.id("assets"), clerkId: v.string() },
+  // String id, validated here, so untrusted ids need no cast at the call site.
+  args: { assetId: v.string(), clerkId: v.string() },
   handler: async (ctx, { assetId, clerkId }) => {
+    const id = ctx.db.normalizeId("assets", assetId);
+    if (!id) return null;
     const user = await ctx.db
       .query("users")
       .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
       .unique();
-    const asset = await ctx.db.get("assets", assetId);
+    const asset = await ctx.db.get("assets", id);
     return user && asset && asset.ownerId === user._id ? asset : null;
   },
 });
@@ -206,5 +171,127 @@ export const deleteAsset = action({
     await ctx.runAction(internal.imagekit.deleteFile, { fileId: asset.fileId });
     await ctx.runMutation(internal.assets.remove, { assetId });
     return null;
+  },
+});
+
+/**
+ * "Save as new": validate and gate the recipe on the server, then queue a job
+ * that renders it in ImageKit and stores the result as a new asset (the
+ * gallery shows a processing card until it lands). Returns the job id.
+ *
+ * The plan is enforced here even though the UI already checked `has()`; the
+ * stored plan is webhook-synced, so a miss is re-checked against live Clerk.
+ */
+export const saveEdit = action({
+  args: {
+    assetId: v.id("assets"),
+    recipe: v.any(),
+    name: v.optional(v.string()),
+  },
+  handler: async (ctx, { assetId, recipe, name }): Promise<Id<"edits">> => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new ConvexError({ code: "UNAUTHENTICATED" });
+    const clerkId = identity.subject;
+
+    const user = await ctx.runQuery(internal.users.getByClerkId, { clerkId });
+    if (!user) throw new ConvexError({ code: "NO_USER" });
+    const asset = await ctx.runQuery(internal.assets.getForOwner, {
+      assetId,
+      clerkId,
+    });
+    if (!asset) throw new ConvexError({ code: "NOT_FOUND" });
+
+    const parsed = parseRecipe(asset.kind, recipe);
+    if (!parsed.ok) {
+      throw new ConvexError({ code: "INVALID", message: parsed.error });
+    }
+    const ops = parsed.steps.map((s) => OPERATIONS_BY_ID[s.opId]);
+    if (ops.some((op) => op.output === "audio")) {
+      throw new ConvexError({ code: "DOWNLOAD_ONLY" });
+    }
+    if (ops.some((op) => op.pathSuffix === HLS_SUFFIX)) {
+      throw new ConvexError({ code: "NOT_SAVEABLE" });
+    }
+
+    // Feature gate (defense in depth behind the UI's has() check).
+    const needed = requiredFeatures(parsed.steps);
+    const lockedFor = (plan: Plan) =>
+      needed.find((feature) => !planHasFeature(plan, feature));
+    let locked = lockedFor(user.plan);
+    if (locked) {
+      const livePlan = await ctx.runAction(
+        internal.billing.refreshPlanFromClerk,
+        { clerkId },
+      );
+      locked = lockedFor(livePlan);
+    }
+    if (locked) throw new ConvexError({ code: "LOCKED", feature: locked });
+
+    // Overlay images must be the caller's own image assets.
+    const assetPaths: Record<string, string> = {};
+    for (const id of overlayAssetIds(parsed.steps)) {
+      const overlay = await ctx.runQuery(internal.assets.getForOwner, {
+        assetId: id,
+        clerkId,
+      });
+      if (!overlay || overlay.kind !== "image") {
+        throw new ConvexError({
+          code: "INVALID",
+          message: "Overlay image not found",
+        });
+      }
+      assetPaths[id] = overlay.filePath;
+    }
+
+    let built;
+    try {
+      built = recipeToTransformations(parsed.steps, { assetPaths });
+    } catch (err) {
+      throw new ConvexError({
+        code: "INVALID",
+        message: err instanceof Error ? err.message : "Invalid recipe",
+      });
+    }
+    if (built.transformation.length === 0 && !built.pathSuffix) {
+      throw new ConvexError({ code: "NOTHING_TO_SAVE" });
+    }
+
+    const outputKind = ops.some((op) => op.output === "image")
+      ? "image"
+      : asset.kind;
+
+    // Pin the output format so the file's real type matches its extension.
+    const format = resolveOutputFormat({
+      originalName: asset.name,
+      steps: parsed.steps,
+      outputKind,
+    });
+    const transformation = [...built.transformation];
+    if (format && !hasFormatStep(parsed.steps)) transformation.push({ format });
+
+    const create = () =>
+      ctx.runMutation(internal.edits.create, {
+        ownerId: user._id,
+        parentAssetId: asset._id,
+        kind: outputKind,
+        name: editFileName({ originalName: asset.name, name, format }),
+        recipe: parsed.steps,
+        request: {
+          src: asset.filePath + (built.pathSuffix ?? ""),
+          transformation,
+          queryParameters: built.queryParameters,
+        },
+      });
+
+    try {
+      return await create();
+    } catch (err) {
+      // A stale stored plan can look over quota right after an upgrade.
+      if (err instanceof ConvexError && err.data?.code === "QUOTA_ASSETS") {
+        await ctx.runAction(internal.billing.refreshPlanFromClerk, { clerkId });
+        return await create();
+      }
+      throw err;
+    }
   },
 });

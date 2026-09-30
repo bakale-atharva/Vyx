@@ -18,7 +18,14 @@ export const deleteAssetsBatch = internalMutation({
       .withIndex("by_owner_created", (q) => q.eq("ownerId", user._id))
       .take(BATCH);
     for (const row of rows) await ctx.db.delete("assets", row._id);
-    return rows.length === BATCH ? ("more" as const) : ("done" as const);
+    const edits = await ctx.db
+      .query("edits")
+      .withIndex("by_owner_created", (q) => q.eq("ownerId", user._id))
+      .take(BATCH);
+    for (const edit of edits) await ctx.db.delete("edits", edit._id);
+    return rows.length === BATCH || edits.length === BATCH
+      ? ("more" as const)
+      : ("done" as const);
   },
 });
 
