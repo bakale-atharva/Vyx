@@ -37,7 +37,7 @@ export default defineSchema({
   }).index("by_clerk_id", ["clerkId"]),
 
   assets: defineTable({
-    ownerId: v.string(),
+    ownerId: v.id("users"),
     kind: assetKindValidator,
     fileId: v.string(),
     filePath: v.string(),

@@ -186,14 +186,25 @@ describe("ownership isolation", () => {
       mime: "image/jpeg",
       size: 1,
     };
+    const mkUser = (clerkId: string) =>
+      t.run((ctx) =>
+        ctx.db.insert("users", {
+          clerkId,
+          email: `${clerkId}@example.com`,
+          plan: "free",
+          assetCount: 0,
+        }),
+      );
+    const aliceId = await mkUser("alice");
+    const bobId = await mkUser("bob");
     const aliceAsset = await t.mutation(internal.assets.insert, {
       ...base,
-      ownerId: "alice",
+      ownerId: aliceId,
       fileId: "f1",
     });
     await t.mutation(internal.assets.insert, {
       ...base,
-      ownerId: "bob",
+      ownerId: bobId,
       fileId: "f2",
     });
 
@@ -202,11 +213,12 @@ describe("ownership isolation", () => {
     const opts = { numItems: 10, cursor: null };
 
     const aliceList = await alice.query(api.assets.list, { paginationOpts: opts });
-    expect(aliceList.page.map((a) => a.ownerId)).toEqual(["alice"]);
+    expect(aliceList.page.map((a) => a.ownerId)).toEqual([aliceId]);
     expect(await alice.query(api.assets.get, { assetId: aliceAsset })).not.toBeNull();
     expect(await bob.query(api.assets.get, { assetId: aliceAsset })).toBeNull();
-    await expect(
-      t.query(api.assets.list, { paginationOpts: opts }),
-    ).rejects.toThrow("Not authenticated");
+    expect(await t.query(api.assets.get, { assetId: aliceAsset })).toBeNull();
+    const anon = await t.query(api.assets.list, { paginationOpts: opts });
+    expect(anon.page).toEqual([]);
+    expect((await t.run((ctx) => ctx.db.get("users", aliceId)))?.assetCount).toBe(1);
   });
 });

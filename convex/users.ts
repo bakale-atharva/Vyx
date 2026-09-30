@@ -5,6 +5,7 @@ import {
   mutation,
   query,
   type MutationCtx,
+  type QueryCtx,
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { ASSET_LIMITS } from "./lib/plans";
@@ -31,6 +32,19 @@ export async function ensureUserRow(
     assetCount: 0,
   });
   return (await ctx.db.get("users", id))!;
+}
+
+/** The signed-in user's row, or null if unauthenticated / not yet created / deleted. */
+export async function getCurrentUser(
+  ctx: QueryCtx,
+): Promise<Doc<"users"> | null> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) return null;
+  const user = await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+    .unique();
+  return user && user.deletedAt === undefined ? user : null;
 }
 
 export async function upsertUserRow(
@@ -95,13 +109,8 @@ export const ensureMe = mutation({
 export const me = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .unique();
-    if (!user || user.deletedAt !== undefined) return null;
+    const user = await getCurrentUser(ctx);
+    if (!user) return null;
     return {
       plan: user.plan,
       subscriptionStatus: user.subscriptionStatus ?? null,

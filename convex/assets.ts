@@ -1,17 +1,10 @@
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
-import {
-  internalMutation,
-  query,
-  type QueryCtx,
-} from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 import { assetKindValidator } from "./schema";
+import { getCurrentUser } from "./users";
 
-async function requireSubject(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Not authenticated");
-  return identity.subject;
-}
+const EMPTY_PAGE = { page: [], isDone: true, continueCursor: "" };
 
 export const list = query({
   args: {
@@ -19,13 +12,14 @@ export const list = query({
     kind: v.optional(assetKindValidator),
   },
   handler: async (ctx, { paginationOpts, kind }) => {
-    const ownerId = await requireSubject(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return EMPTY_PAGE;
     const assets = ctx.db.query("assets");
     const q = kind
       ? assets.withIndex("by_owner_kind_created", (i) =>
-          i.eq("ownerId", ownerId).eq("kind", kind),
+          i.eq("ownerId", user._id).eq("kind", kind),
         )
-      : assets.withIndex("by_owner_created", (i) => i.eq("ownerId", ownerId));
+      : assets.withIndex("by_owner_created", (i) => i.eq("ownerId", user._id));
     return await q.order("desc").paginate(paginationOpts);
   },
 });
@@ -33,15 +27,16 @@ export const list = query({
 export const get = query({
   args: { assetId: v.id("assets") },
   handler: async (ctx, { assetId }) => {
-    const ownerId = await requireSubject(ctx);
+    const user = await getCurrentUser(ctx);
+    if (!user) return null;
     const asset = await ctx.db.get("assets", assetId);
-    return asset && asset.ownerId === ownerId ? asset : null;
+    return asset && asset.ownerId === user._id ? asset : null;
   },
 });
 
 export const insert = internalMutation({
   args: {
-    ownerId: v.string(),
+    ownerId: v.id("users"),
     kind: assetKindValidator,
     fileId: v.string(),
     filePath: v.string(),
@@ -55,14 +50,10 @@ export const insert = internalMutation({
     recipe: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
+    const owner = await ctx.db.get("users", args.ownerId);
+    if (!owner) throw new Error("Owner not found");
     const id = await ctx.db.insert("assets", { ...args, createdAt: Date.now() });
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.ownerId))
-      .unique();
-    if (user) {
-      await ctx.db.patch("users", user._id, { assetCount: user.assetCount + 1 });
-    }
+    await ctx.db.patch("users", owner._id, { assetCount: owner.assetCount + 1 });
     return id;
   },
 });
@@ -73,13 +64,10 @@ export const remove = internalMutation({
     const asset = await ctx.db.get("assets", assetId);
     if (!asset) return null;
     await ctx.db.delete("assets", assetId);
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", asset.ownerId))
-      .unique();
-    if (user) {
-      await ctx.db.patch("users", user._id, {
-        assetCount: Math.max(0, user.assetCount - 1),
+    const owner = await ctx.db.get("users", asset.ownerId);
+    if (owner) {
+      await ctx.db.patch("users", owner._id, {
+        assetCount: Math.max(0, owner.assetCount - 1),
       });
     }
     return null;

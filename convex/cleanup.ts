@@ -7,9 +7,14 @@ const BATCH = 200;
 export const deleteAssetsBatch = internalMutation({
   args: { clerkId: v.string() },
   handler: async (ctx, { clerkId }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
+      .unique();
+    if (!user) return "done" as const;
     const rows = await ctx.db
       .query("assets")
-      .withIndex("by_owner_created", (q) => q.eq("ownerId", clerkId))
+      .withIndex("by_owner_created", (q) => q.eq("ownerId", user._id))
       .take(BATCH);
     for (const row of rows) await ctx.db.delete("assets", row._id);
     return rows.length === BATCH ? ("more" as const) : ("done" as const);
