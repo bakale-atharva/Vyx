@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { internalAction, internalMutation } from "./_generated/server";
+import { userRoot } from "./lib/validateUpload";
 
 const BATCH = 200;
 
@@ -33,31 +34,13 @@ export const deleteUserRow = internalMutation({
   },
 });
 
-async function deleteImageKitFolder(clerkId: string) {
-  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
-  if (!privateKey) {
-    console.warn("IMAGEKIT_PRIVATE_KEY not set; skipping ImageKit folder purge");
-    return;
-  }
-  const res = await fetch("https://api.imagekit.io/v1/folder", {
-    method: "DELETE",
-    headers: {
-      Authorization: `Basic ${btoa(`${privateKey}:`)}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ folderPath: `/vyx/users/${clerkId}/` }),
-  });
-  // 404: folder never existed (user never uploaded); nothing to purge.
-  if (!res.ok && res.status !== 404) {
-    throw new Error(`ImageKit folder delete failed: ${res.status}`);
-  }
-}
-
 /** Triggered by user.deleted: ImageKit folder, then Convex rows in batches. */
 export const purgeUser = internalAction({
   args: { clerkId: v.string() },
   handler: async (ctx, { clerkId }) => {
-    await deleteImageKitFolder(clerkId);
+    await ctx.runAction(internal.imagekit.deleteFolder, {
+      folderPath: userRoot(clerkId),
+    });
     let state: "more" | "done" = "more";
     while (state === "more") {
       state = await ctx.runMutation(internal.cleanup.deleteAssetsBatch, {

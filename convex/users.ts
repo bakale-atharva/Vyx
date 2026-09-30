@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import type { Doc } from "./_generated/dataModel";
 import {
   internalMutation,
+  internalQuery,
   mutation,
   query,
   type MutationCtx,
@@ -69,6 +70,17 @@ export async function markUserDeleted(ctx: MutationCtx, clerkId: string) {
   if (user) await ctx.db.patch("users", user._id, { deletedAt: Date.now() });
   await ctx.scheduler.runAfter(0, internal.cleanup.purgeUser, { clerkId });
 }
+
+export const getByClerkId = internalQuery({
+  args: { clerkId: v.string() },
+  handler: async (ctx, { clerkId }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkId))
+      .unique();
+    return user && user.deletedAt === undefined ? user : null;
+  },
+});
 
 export const upsertFromClerk = internalMutation({
   args: {

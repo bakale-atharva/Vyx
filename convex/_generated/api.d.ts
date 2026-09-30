@@ -13,7 +13,9 @@ import type * as billing from "../billing.js";
 import type * as cleanup from "../cleanup.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
+import type * as imagekit from "../imagekit.js";
 import type * as lib_plans from "../lib/plans.js";
+import type * as lib_validateUpload from "../lib/validateUpload.js";
 import type * as users from "../users.js";
 import type * as webhooks from "../webhooks.js";
 
@@ -29,7 +31,9 @@ declare const fullApi: ApiFromModules<{
   cleanup: typeof cleanup;
   crons: typeof crons;
   http: typeof http;
+  imagekit: typeof imagekit;
   "lib/plans": typeof lib_plans;
+  "lib/validateUpload": typeof lib_validateUpload;
   users: typeof users;
   webhooks: typeof webhooks;
 }>;
