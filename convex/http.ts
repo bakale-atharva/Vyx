@@ -15,7 +15,12 @@ http.route({
       evt = await verifyWebhook(req, {
         signingSecret: process.env.CLERK_WEBHOOK_SIGNING_SECRET,
       });
-    } catch {
+    } catch (err) {
+      console.error(
+        "Clerk webhook verification failed:",
+        err instanceof Error ? err.message : String(err),
+        { hasSvixId: svixId !== null },
+      );
       return new Response("Invalid signature", { status: 400 });
     }
     if (!svixId) return new Response("Missing svix-id", { status: 400 });
