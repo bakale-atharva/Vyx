@@ -2,7 +2,6 @@ import { SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ControlStrip } from "@/components/site/ControlStrip";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { ToolPanelPreview } from "@/components/site/ToolPanelPreview";
 import { Button, buttonStyles } from "@/components/ui/button";

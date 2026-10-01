@@ -8,7 +8,6 @@ import { Logo } from "@/components/site/Logo";
 import {
   GalleryIcon,
   ImageIcon,
-  UploadIcon,
   VideoIcon,
 } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
