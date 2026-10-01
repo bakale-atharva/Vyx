@@ -32,7 +32,7 @@ export function ControlStrip({
             key={plan}
             aria-current={active ? "true" : undefined}
             className={cn(
-              "@container flex h-10 min-w-0 items-center justify-between gap-2 px-3 font-mono text-xs font-medium uppercase",
+              "@container flex h-10 min-w-0 items-center justify-between gap-2 px-2 font-mono text-xs font-medium uppercase",
               cell.fill,
               cell.text,
               plan === "free" && "ring-1 ring-line-strong ring-inset",
