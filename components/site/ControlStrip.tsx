@@ -32,15 +32,16 @@ export function ControlStrip({
             key={plan}
             aria-current={active ? "true" : undefined}
             className={cn(
-              "flex h-10 items-center justify-between gap-2 px-3 font-mono text-xs font-medium uppercase",
+              "@container flex h-10 min-w-0 items-center justify-between gap-2 px-2 font-mono text-xs font-medium uppercase",
               cell.fill,
               cell.text,
               plan === "free" && "ring-1 ring-line-strong ring-inset",
               current && !active && "opacity-45",
             )}
           >
-            <span>{cell.name}</span>
-            <span className="tabular-nums">
+            <span className="truncate">{cell.name}</span>
+            {/* The count only shows when the cell has room for it (not in the studio rail). */}
+            <span className="hidden tabular-nums @[5.5rem]:inline">
               {String(PLAN_FEATURES[plan].length).padStart(2, "0")}
             </span>
           </li>

@@ -2,7 +2,7 @@
 
 import { useQuery } from "convex/react";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { buttonStyles } from "@/components/ui/button";
 import { AlertIcon, InfoIcon } from "@/components/ui/icons";
 import { api } from "@/convex/_generated/api";
@@ -46,9 +46,10 @@ function Banner({
 /** Webhook-driven account notices from `users.me`. */
 export function StudioBanners() {
   const me = useQuery(api.users.me);
+  // Read the clock once per mount, not on every render (keeps render pure).
+  const [now] = useState(() => Date.now());
   if (!me) return null;
   const { banners, plan } = me;
-  const now = Date.now();
   const trialEnds =
     banners.trialEndsAt && banners.trialEndsAt > now
       ? banners.trialEndsAt

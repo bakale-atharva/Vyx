@@ -61,6 +61,39 @@ export const get = query({
   },
 });
 
+const MAX_THUMBNAIL_BATCH = 48;
+
+/**
+ * Paths of the caller's own assets, for signing gallery thumbnails in one
+ * round trip. Ids that are malformed, missing or owned by someone else are
+ * simply left out of the result.
+ */
+export const thumbnailSources = query({
+  args: { assetIds: v.array(v.string()) },
+  handler: async (ctx, { assetIds }) => {
+    const user = await getCurrentUser(ctx);
+    if (!user) return [];
+    const sources: Array<{
+      assetId: Id<"assets">;
+      kind: "image" | "video";
+      filePath: string;
+    }> = [];
+    for (const raw of assetIds.slice(0, MAX_THUMBNAIL_BATCH)) {
+      const id = ctx.db.normalizeId("assets", raw);
+      if (!id) continue;
+      const asset = await ctx.db.get("assets", id);
+      if (asset && asset.ownerId === user._id) {
+        sources.push({
+          assetId: asset._id,
+          kind: asset.kind,
+          filePath: asset.filePath,
+        });
+      }
+    }
+    return sources;
+  },
+});
+
 export const getByFileId = internalQuery({
   args: { fileId: v.string() },
   handler: async (ctx, { fileId }) =>
