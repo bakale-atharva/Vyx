@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
+/*
+ * Vyx design tokens: the Proof Sheet.
+ * A neutral grey surround (no hue, so it never tints the photo) with paper-white
+ * ink. Colour exists only as control-strip cells (cyan, magenta, K) that mark
+ * plan tiers, plus hairline crop and registration marks.
+ */
+@theme {
+  --color-surface: oklch(0.27 0 0);
+  --color-panel: oklch(0.31 0 0);
+  --color-raised: oklch(0.37 0 0);
+  --color-line: oklch(1 0 0 / 0.13);
+  --color-line-strong: oklch(1 0 0 / 0.26);
+
+  --color-fg: oklch(0.96 0.006 90);
+  --color-muted: oklch(0.8 0.004 90);
+  --color-subtle: oklch(0.7 0.003 90);
+
+  /* Primary action is the paper itself: white sheet, black ink. */
+  --color-accent: oklch(0.96 0.006 90);
+  --color-accent-strong: oklch(1 0 0);
+  --color-accent-fg: oklch(0.18 0 0);
+  --color-accent-soft: oklch(1 0 0 / 0.1);
+
+  /* Control-strip inks. Tier identity only; never decoration. */
+  --color-ink: oklch(0.14 0 0);
+  --color-cyan: oklch(0.74 0.13 225);
+  --color-magenta: oklch(0.66 0.26 350);
+  --color-yellow: oklch(0.88 0.17 95);
+
+  --color-danger: oklch(0.72 0.19 27);
+  --color-danger-soft: oklch(0.72 0.19 27 / 0.14);
+  --color-warn: oklch(0.88 0.17 95);
+  --color-warn-soft: oklch(0.88 0.17 95 / 0.13);
+  --color-pro: var(--color-cyan);
+  --color-ultra: var(--color-magenta);
+
+  /* Proofs are cut square. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-surface);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 1, "cv11" 1;
+}
+
+/* Browser surfaces themed from the palette. */
+::selection {
+  background: var(--color-magenta);
+  color: var(--color-ink);
+}
+
+/* The registration target colour: magenta ring. */
+:focus-visible {
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 2px;
+}
+
+input,
+textarea {
+  caret-color: var(--color-magenta);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(1 0 0 / 0.3) transparent;
+}
+
+dialog::backdrop {
+  background: oklch(0.12 0 0 / 0.72);
+  backdrop-filter: blur(6px);
+}
+
+/*
+ * Crop marks: eight hairlines sitting just outside a frame's trim corners.
+ * Wrap a frame in .crop-marks; padding reserves the room the marks live in.
+ */
+.crop-marks {
+  --m: 14px;
+  --g: 8px;
+  --mark: var(--color-subtle);
+  padding: calc(var(--m) + var(--g));
+  background:
+    linear-gradient(var(--mark), var(--mark)) 0 calc(var(--m) + var(--g)) / var(--m) 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(var(--m) + var(--g)) 0 / 1px var(--m) no-repeat,
+    linear-gradient(var(--mark), var(--mark)) right calc(var(--m) + var(--g)) / var(--m) 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - var(--m) - var(--g)) 0 / 1px var(--m) no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 0 calc(100% - var(--m) - var(--g)) / var(--m) 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(var(--m) + var(--g)) 100% / 1px var(--m) no-repeat,
+    linear-gradient(var(--mark), var(--mark)) right calc(100% - var(--m) - var(--g)) / var(--m) 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - var(--m) - var(--g)) 100% / 1px var(--m) no-repeat;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

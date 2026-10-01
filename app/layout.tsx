@@ -1,14 +1,8 @@
-import {
-  ClerkProvider,
-  Show,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,9 +16,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vyx",
+  title: { default: "Vyx", template: "%s · Vyx" },
   description:
-    "A photo and video editor app, inspired by Sonny Sangha, vibecoded using Claude.",
+    "Edit photos and videos in your browser. Free tools to start, AI when you need it.",
+};
+
+/** Clerk widgets follow the Vyx dark palette (no theme package needed). */
+const clerkAppearance = {
+  cssLayerName: "clerk",
+  variables: {
+    colorBackground: "oklch(0.31 0 0)",
+    colorInput: "oklch(0.27 0 0)",
+    colorForeground: "oklch(0.96 0.006 90)",
+    colorMutedForeground: "oklch(0.8 0.004 90)",
+    colorPrimary: "oklch(0.96 0.006 90)",
+    colorPrimaryForeground: "oklch(0.18 0 0)",
+    colorNeutral: "oklch(0.96 0.006 90)",
+    colorDanger: "oklch(0.72 0.19 27)",
+    borderRadius: "0.1875rem",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -33,35 +43,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <ClerkProvider appearance={{ cssLayerName: "clerk" }}>
+      <body className="flex min-h-full flex-col">
+        <ClerkProvider appearance={clerkAppearance}>
           <ConvexClientProvider>
-          <header className="flex h-16 items-center justify-between border-b border-black/[.08] px-6 font-sans dark:border-white/[.145]">
-            <Link
-              href="/"
-              className="text-xl font-semibold tracking-tight text-black dark:text-zinc-50"
-            >
-              Vyx
-            </Link>
-            <div className="flex items-center gap-3 text-sm font-medium">
-              <Show when="signed-out">
-                <SignInButton>
-                  <button className="flex h-10 cursor-pointer items-center justify-center rounded-full border border-solid border-black/[.08] px-4 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]">
-                    Sign in
-                  </button>
-                </SignInButton>
-                <SignUpButton>
-                  <button className="flex h-10 cursor-pointer items-center justify-center rounded-full bg-foreground px-4 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]">
-                    Sign up
-                  </button>
-                </SignUpButton>
-              </Show>
-              <Show when="signed-in">
-                <UserButton />
-              </Show>
-            </div>
-          </header>
-          {children}
+            <ToastProvider>{children}</ToastProvider>
           </ConvexClientProvider>
         </ClerkProvider>
       </body>
