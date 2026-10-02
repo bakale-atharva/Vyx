@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { cn } from "@/lib/cn";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -33,7 +33,7 @@ export function buttonStyles(
   );
 }
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ComponentPropsWithRef<"button"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
