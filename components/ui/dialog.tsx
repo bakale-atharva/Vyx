@@ -13,6 +13,8 @@ interface DialogProps {
   children?: ReactNode;
   /** Action row, right-aligned. */
   footer?: ReactNode;
+  /** "wide" fits embedded content such as Clerk's pricing table. */
+  size?: "default" | "wide";
   className?: string;
 }
 
@@ -24,6 +26,7 @@ export function Dialog({
   description,
   children,
   footer,
+  size = "default",
   className,
 }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -45,7 +48,10 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       className={cn(
-        "m-auto w-[min(32rem,calc(100vw-2rem))] rounded-lg border border-line-strong bg-panel p-0 text-fg shadow-[0_24px_64px_-12px_oklch(0_0_0/0.6)]",
+        size === "wide"
+          ? "m-auto max-h-[calc(100dvh-2rem)] w-[min(72rem,calc(100vw-2rem))] overflow-y-auto"
+          : "m-auto w-[min(32rem,calc(100vw-2rem))]",
+        "rounded-lg border border-line-strong bg-panel p-0 text-fg shadow-[0_24px_64px_-12px_oklch(0_0_0/0.6)]",
         className,
       )}
     >
