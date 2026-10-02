@@ -451,7 +451,7 @@ export const OPERATIONS: readonly AnyOperation[] = [
     id: "change_bg",
     kind: "image",
     group: "generative",
-    label: "Change background",
+    label: "Change background (AI)",
     description: "Replace the background from a text prompt.",
     feature: FEATURES.IMAGE_BG_CHANGE,
     params: z.object({ prompt }),
