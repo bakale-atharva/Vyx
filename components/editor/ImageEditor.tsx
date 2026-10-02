@@ -4,7 +4,7 @@ import { PricingTable, useAuth } from "@clerk/nextjs";
 import { useAction } from "convex/react";
 import { ConvexError } from "convex/values";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { getDownloadUrl, getPreviewUrl } from "@/actions/editor";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -29,12 +29,13 @@ import {
   type AnyOperation,
   type OperationGroup,
 } from "@/lib/editor/operations";
+import { CropStage } from "./CropStage";
 import { EditorCanvas } from "./EditorCanvas";
 import { StepsList } from "./StepsList";
 import { GROUP_LABEL, GroupBar, ToolList } from "./ToolPanel";
 import { ToolSettings } from "./ToolSettings";
 import { useEditorState } from "./useEditorState";
-import { usePreview } from "./usePreview";
+import { needsGenerate, usePreview, validateSteps } from "./usePreview";
 
 const IMAGE_TOOLS = operationsFor("image");
 const GROUPS = (Object.keys(GROUP_LABEL) as OperationGroup[]).filter((g) =>
@@ -94,6 +95,67 @@ export function ImageEditor({ asset }: { asset: Doc<"assets"> }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [dispatch]);
+
+  // Crop box: while a Crop step is selected, show the image as it is just
+  // before that step and let the user drag the box over it.
+  const cropping = selected?.opId === "crop" ? selected : null;
+  const cropIndex = cropping ? steps.findIndex((s) => s.uid === cropping.uid) : -1;
+  const prefix = useMemo(
+    () => (cropIndex > 0 ? validateSteps(steps.slice(0, cropIndex)).recipe : []),
+    [steps, cropIndex],
+  );
+  const prefixKey = JSON.stringify(prefix);
+  // Rendering AI steps costs credits, so they never render just to place a crop.
+  const prefixGated = prefix.some((s) => needsGenerate(OPERATIONS_BY_ID[s.opId]));
+  const [cropSource, setCropSource] = useState<{ key: string; url: string } | null>(null);
+
+  useEffect(() => {
+    if (!cropping || prefixGated || prefixKey === "[]") return;
+    let cancelled = false;
+    getPreviewUrl(asset._id, JSON.parse(prefixKey)).then((r) => {
+      if (!cancelled && "url" in r && r.url) setCropSource({ key: prefixKey, url: r.url });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [asset._id, cropping, prefixGated, prefixKey]);
+
+  const cropSourceUrl =
+    prefixKey === "[]"
+      ? originalUrl
+      : cropSource?.key === prefixKey
+        ? cropSource.url
+        : undefined;
+
+  let stage: ReactNode = undefined;
+  if (cropping) {
+    const p = cropping.params;
+    const num = (v: unknown, fallback: number) => (typeof v === "number" ? v : fallback);
+    stage = prefixGated ? (
+      <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+        <p className="max-w-sm text-sm text-muted">
+          Drag Crop above the AI steps to draw the box on the image, or set the crop with
+          the numbers in its settings.
+        </p>
+      </div>
+    ) : cropSourceUrl ? (
+      <CropStage
+        src={cropSourceUrl}
+        alt={`${asset.name}, before cropping`}
+        value={{
+          x: num(p.x, 0),
+          y: num(p.y, 0),
+          width: num(p.width, 500),
+          height: num(p.height, 500),
+        }}
+        onChange={(rect) => dispatch({ type: "update", uid: cropping.uid, params: rect })}
+      />
+    ) : (
+      <div role="status" className="absolute inset-0 flex items-center justify-center text-sm text-muted">
+        Loading the image to crop…
+      </div>
+    );
+  }
 
   const isUnlocked = useCallback(
     (op: AnyOperation) => (has ? has({ feature: op.feature }) : false),
@@ -229,6 +291,7 @@ export function ImageEditor({ asset }: { asset: Doc<"assets"> }) {
           stale={stale}
           onGenerate={generate}
           onUnlock={() => setUpgradeOpen(true)}
+          stage={stage}
         >
           <GroupBar groups={GROUPS} value={group} onChange={setGroup} />
         </EditorCanvas>

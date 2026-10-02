@@ -15,6 +15,8 @@ interface EditorCanvasProps {
   stale: boolean;
   onGenerate: () => void;
   onUnlock: () => void;
+  /** Replaces the preview while a step needs direct manipulation (crop box). */
+  stage?: ReactNode;
   /** The floating group bar. */
   children: ReactNode;
 }
@@ -31,6 +33,7 @@ export function EditorCanvas({
   stale,
   onGenerate,
   onUnlock,
+  stage,
   children,
 }: EditorCanvasProps) {
   const url = preview.status === "ready" ? preview.url : undefined;
@@ -65,7 +68,8 @@ export function EditorCanvas({
     <div className="relative flex min-h-[50vh] min-w-0 flex-1 flex-col">
       <div className="crop-marks flex-1">
         <div className="relative size-full min-h-[50vh] overflow-hidden border border-line-strong bg-panel">
-          {showImage && (
+          {stage}
+          {!stage && showImage && (
             // Signed ImageKit URL: next/image would re-sign or alter it.
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -78,7 +82,7 @@ export function EditorCanvas({
             />
           )}
 
-          {comparing && originalUrl && url && (
+          {!stage && comparing && originalUrl && url && (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -101,7 +105,7 @@ export function EditorCanvas({
             </>
           )}
 
-          {(preview.status === "loading" || processing) && (
+          {!stage && (preview.status === "loading" || processing) && (
             <div
               role="status"
               className="absolute inset-x-0 top-0 flex items-center gap-3 bg-ink/80 px-4 py-2 text-sm"
@@ -114,7 +118,7 @@ export function EditorCanvas({
             </div>
           )}
 
-          {(stale || preview.status === "locked" || preview.status === "error" || (url && failed === url)) && (
+          {!stage && (stale || preview.status === "locked" || preview.status === "error" || (url && failed === url)) && (
             <div className="absolute inset-x-0 bottom-16 flex justify-center px-4">
               <div className="flex max-w-md flex-col items-center gap-3 bg-ink/85 px-5 py-4 text-center">
                 {preview.status === "locked" ? (
@@ -148,7 +152,7 @@ export function EditorCanvas({
         </div>
       </div>
 
-      {comparing && originalUrl && url && (
+      {!stage && comparing && originalUrl && url && (
         <label className="mt-3 flex items-center gap-3 text-sm text-muted">
           Compare
           <input
