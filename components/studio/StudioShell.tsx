@@ -5,20 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import { Logo } from "@/components/site/Logo";
-import {
-  GalleryIcon,
-  ImageIcon,
-  VideoIcon,
-} from "@/components/ui/icons";
+import { GalleryIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 import { PlanBadge } from "./PlanBadge";
 import { StudioBanners } from "./StudioBanners";
 import { StudioEffects } from "./StudioEffects";
 
 const NAV = [
+  // Uploading lives in the gallery (header buttons and drag-and-drop).
   { href: "/studio", label: "Gallery", Icon: GalleryIcon, exact: true },
-  { href: "/studio/upload/image", label: "Upload image", Icon: ImageIcon },
-  { href: "/studio/upload/video", label: "Upload video", Icon: VideoIcon },
 ] as const;
 
 function NavLinks({ orientation }: { orientation: "vertical" | "horizontal" }) {
