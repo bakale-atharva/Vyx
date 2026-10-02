@@ -79,6 +79,40 @@ export const ChevronDownIcon = (p: P) => (
   </Icon>
 );
 
+export const ChevronUpIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="m6 15 6-6 6 6" />
+  </Icon>
+);
+
+export const ArrowLeftIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M19 12H5" />
+    <path d="m11 6-6 6 6 6" />
+  </Icon>
+);
+
+export const UndoIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M9 7 4 12l5 5" />
+    <path d="M4 12h11a5 5 0 0 1 0 10h-2" />
+  </Icon>
+);
+
+export const RedoIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="m15 7 5 5-5 5" />
+    <path d="M20 12H9a5 5 0 0 0 0 10h2" />
+  </Icon>
+);
+
+export const CompareIcon = (p: P) => (
+  <Icon {...p}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M12 2v20" />
+  </Icon>
+);
+
 export const ArrowRightIcon = (p: P) => (
   <Icon {...p}>
     <path d="M5 12h14" />
