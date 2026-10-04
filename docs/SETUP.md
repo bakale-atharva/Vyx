@@ -80,6 +80,7 @@ Totals: Free 6, Pro 16, Ultra 23.
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `CLERK_FRONTEND_API_URL`
 - `NEXT_PUBLIC_CLERK_SIGN_IN_URL`, `NEXT_PUBLIC_CLERK_SIGN_UP_URL`, `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`, `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL`
 - `NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT`, `IMAGEKIT_PUBLIC_KEY`, `IMAGEKIT_PRIVATE_KEY`
+- E2E only: `E2E_CLERK_USER_EMAIL` (a **Free-plan** dev user; a `+clerk_test` address suppresses emails), optional `E2E_BASE_URL` (defaults to `http://localhost:3000`)
 
 Convex deployment env (`npx convex env set NAME value`):
 

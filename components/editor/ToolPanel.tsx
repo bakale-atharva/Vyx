@@ -1,5 +1,6 @@
 "use client";
 
+import type { KeyboardEvent } from "react";
 import { Badge } from "@/components/ui/badge";
 import { LockIcon } from "@/components/ui/icons";
 import { requiredPlan } from "@/lib/billing/plans";
@@ -28,10 +29,31 @@ export function GroupBar({
   value: OperationGroup;
   onChange: (group: OperationGroup) => void;
 }) {
+  // Toolbar pattern: one tab stop (the active group); arrows, Home and End
+  // move between groups and select them.
+  function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    const index = groups.indexOf(value);
+    const next =
+      e.key === "ArrowRight" || e.key === "ArrowDown"
+        ? (index + 1) % groups.length
+        : e.key === "ArrowLeft" || e.key === "ArrowUp"
+          ? (index - 1 + groups.length) % groups.length
+          : e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? groups.length - 1
+              : -1;
+    if (next === -1) return;
+    e.preventDefault();
+    onChange(groups[next]);
+    e.currentTarget.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+  }
+
   return (
     <div
       role="toolbar"
       aria-label="Tool groups"
+      onKeyDown={onKeyDown}
       className="flex overflow-x-auto border border-line-strong bg-panel/95"
     >
       {groups.map((group) => {
@@ -41,6 +63,7 @@ export function GroupBar({
             key={group}
             type="button"
             aria-pressed={active}
+            tabIndex={active ? 0 : -1}
             onClick={() => onChange(group)}
             className={cn(
               "h-9 shrink-0 cursor-pointer border-r border-line-strong px-4 text-sm font-medium last:border-r-0",
