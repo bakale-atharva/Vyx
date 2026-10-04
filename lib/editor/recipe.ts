@@ -293,6 +293,36 @@ const THUMBNAIL_SUFFIX = "/ik-thumbnail.jpg";
 const STREAMING_SUFFIX = "/ik-master.m3u8";
 
 /**
+ * AI resources the ImageKit video player requests for a source (confirmed
+ * against @imagekit/video-player 1.0.0-beta.4): the player keeps only the
+ * trim params (so/eo/du) in their `tr`, and adds `lang-xx` for translations.
+ */
+const AI_RESOURCES: { suffix: string; feature: FeatureSlug; translation: boolean }[] = [
+  { suffix: "/ik-gensubtitle.transcript", feature: FEATURES.VIDEO_AI_SUBTITLES, translation: false },
+  { suffix: "/ik-gensubtitle.vtt", feature: FEATURES.VIDEO_SUBTITLE_TRANSLATE, translation: true },
+  { suffix: "/ik-genchapter.vtt", feature: FEATURES.VIDEO_AI_SUBTITLES, translation: false },
+];
+const TRIM_TOKEN = new RegExp(`^(so|eo|du)-${DECIMAL}$`);
+const LANG_TOKEN = /^lang-(fr|de|es|hi)$/;
+
+/** Validate the `tr` of an AI subtitle/chapter URL: trim params, plus one language for translations. */
+function parseAiResourceTr(
+  tr: string | null,
+  translation: boolean,
+): { ok: true; trimmed: boolean } | { ok: false; reason: string } {
+  const tokens = tr === null ? [] : tr.split(/[,:]/);
+  let langs = 0;
+  let trimmed = false;
+  for (const token of tokens) {
+    if (TRIM_TOKEN.test(token)) trimmed = true;
+    else if (translation && LANG_TOKEN.test(token)) langs++;
+    else return { ok: false, reason: `Param not allowed on AI resource: ${token}` };
+  }
+  if (translation && langs !== 1) return { ok: false, reason: "Translation needs exactly one language" };
+  return { ok: true, trimmed };
+}
+
+/**
  * Validate an arbitrary ImageKit URL for one user and report every feature it
  * needs. The URL must be on our endpoint, inside the user's own folder, and
  * contain only allowlisted transformations.
@@ -328,7 +358,11 @@ export function parseSignedRequest(
 
   let pathFeature: FeatureSlug | null = null;
   let thumbnail = false;
-  if (path.endsWith(THUMBNAIL_SUFFIX)) {
+  const aiResource = AI_RESOURCES.find((r) => path.endsWith(r.suffix));
+  if (aiResource) {
+    pathFeature = aiResource.feature;
+    path = path.slice(0, -aiResource.suffix.length);
+  } else if (path.endsWith(THUMBNAIL_SUFFIX)) {
     pathFeature = FEATURES.VIDEO_THUMBNAIL;
     thumbnail = true;
     path = path.slice(0, -THUMBNAIL_SUFFIX.length);
@@ -377,7 +411,13 @@ export function parseSignedRequest(
 
   const features = new Set<FeatureSlug>();
   if (pathFeature) features.add(pathFeature);
-  if (tr !== null) {
+  if (aiResource) {
+    // Translations are built on the generated subtitles, so need both features.
+    if (aiResource.translation) features.add(FEATURES.VIDEO_AI_SUBTITLES);
+    const parsed = parseAiResourceTr(tr, aiResource.translation);
+    if (!parsed.ok) return reject(parsed.reason);
+    if (parsed.trimmed) features.add(FEATURES.VIDEO_TRIM);
+  } else if (tr !== null) {
     const parsed = parseTr(tr, kind, opts.userId, thumbnail);
     if (!parsed.ok) return reject(parsed.reason);
     for (const f of parsed.features) features.add(f);

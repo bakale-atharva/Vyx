@@ -693,8 +693,9 @@ export const OPERATIONS: readonly AnyOperation[] = [
     params: z.object({
       maxChars: z.number().int().min(20).max(120),
       highlightWords: z.boolean(),
+      chapters: z.boolean(),
     }),
-    defaults: { maxChars: 60, highlightWords: true },
+    defaults: { maxChars: 60, highlightWords: true, chapters: true },
     toTransformation: () => [],
     playerOnly: true,
   }),

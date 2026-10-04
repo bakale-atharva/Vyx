@@ -7,9 +7,17 @@ import type { Step } from "./useEditorState";
 
 const DEBOUNCE_MS = 400;
 
-/** AI and generative steps cost ImageKit extension units: render only on Generate. */
+/**
+ * AI and generative steps cost ImageKit extension units: render only on
+ * Generate. That covers async image AI renders and the video player's AI
+ * subtitles/translations (player-only steps).
+ */
 export function needsGenerate(op: AnyOperation | undefined) {
-  return !!op?.async && (op.group === "ai" || op.group === "generative");
+  return (
+    !!op &&
+    (op.group === "ai" || op.group === "generative") &&
+    (!!op.async || !!op.playerOnly)
+  );
 }
 
 export type PreviewState =
