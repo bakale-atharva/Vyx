@@ -34,6 +34,7 @@ const LABELS: Record<string, string> = {
   assetId: "Image",
   maxChars: "Characters per line",
   highlightWords: "Highlight words",
+  chapters: "AI chapters",
 };
 
 const OPTION_LABELS: Record<string, string> = {

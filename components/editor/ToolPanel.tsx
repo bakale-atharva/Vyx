@@ -6,12 +6,16 @@ import { requiredPlan } from "@/lib/billing/plans";
 import { cn } from "@/lib/cn";
 import type { AnyOperation, OperationGroup } from "@/lib/editor/operations";
 
-export const GROUP_LABEL: Partial<Record<OperationGroup, string>> = {
+export const GROUP_LABEL: Record<OperationGroup, string> = {
   adjust: "Adjust",
+  trim: "Trim",
   filters: "Filters",
+  audio: "Audio",
   overlays: "Overlays",
+  thumbnail: "Thumbnail",
   ai: "AI",
   generative: "Generative",
+  streaming: "Streaming",
 };
 
 /** Slim ruled strip of tool groups, floating near the canvas foot. */
