@@ -14,10 +14,16 @@ This file gives Claude Code the context it needs to work in this repo. Keep it s
 ## Commands
 
 - **Install:** `pnpm install`
-- **Dev / run:** `pnpm run frontend && pnpm run backend`
+- **Dev / run:** `pnpm run backend` and `pnpm run frontend` in separate terminals (each keeps running)
 - **Build:** `pnpm run build`
-- **Test:** `pnpm test`
+- **Test:** `pnpm test` (unit tests on Node's built-in test runner — don't add Vitest) · `pnpm test:e2e` (Playwright + `@clerk/testing`; needs `E2E_CLERK_USER_EMAIL`, a Free-plan user)
 - **Lint / format:** `pnpm run lint`
+
+## Architecture
+
+- `lib/billing/plans.ts` (plans, features, quotas) and `lib/editor/*` (tool registry, recipes, signing gate) are pure TS shared by Next.js and Convex. Add a tool in `operations.ts` and its URL params to the `parseSignedRequest` allowlist in `recipe.ts`; `tests/unit/signing-gate.test.ts` fails if they drift.
+- Every ImageKit URL is signed server-side after ownership + `has({ feature })` checks (`actions/editor.ts`, `app/api/imagekit/sign`). Convex re-checks plans in `assets.saveEdit`.
+- Env var names are listed in `docs/SETUP.md`.
 
 ## Git Workflow
 
