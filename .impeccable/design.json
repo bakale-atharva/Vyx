@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T00:00:00Z",
+  "title": "Design System: Vyx",
+  "extensions": {
+    "colorMeta": {
+      "surface": { "role": "neutral", "displayName": "Eighteen-Percent Surround", "canonical": "oklch(0.27 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "panel": { "role": "neutral", "displayName": "Sheet Grey", "canonical": "oklch(0.31 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "raised": { "role": "neutral", "displayName": "Raised Grey", "canonical": "oklch(0.37 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(1 0 0 / 0.13)" },
+      "line-strong": { "role": "neutral", "displayName": "Rule", "canonical": "oklch(1 0 0 / 0.26)" },
+      "fg": { "role": "neutral", "displayName": "Paper Ink", "canonical": "oklch(0.96 0.006 90)", "tonalRamp": ["oklch(0.15 0.006 90)", "oklch(0.26 0.006 90)", "oklch(0.38 0.006 90)", "oklch(0.49 0.006 90)", "oklch(0.61 0.006 90)", "oklch(0.72 0.006 90)", "oklch(0.84 0.006 90)", "oklch(0.95 0.006 90)"] },
+      "muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "oklch(0.8 0.004 90)", "tonalRamp": ["oklch(0.15 0.004 90)", "oklch(0.26 0.004 90)", "oklch(0.38 0.004 90)", "oklch(0.49 0.004 90)", "oklch(0.61 0.004 90)", "oklch(0.72 0.004 90)", "oklch(0.84 0.004 90)", "oklch(0.95 0.004 90)"] },
+      "subtle": { "role": "neutral", "displayName": "Faint Ink", "canonical": "oklch(0.7 0.003 90)", "tonalRamp": ["oklch(0.15 0.003 90)", "oklch(0.26 0.003 90)", "oklch(0.38 0.003 90)", "oklch(0.49 0.003 90)", "oklch(0.61 0.003 90)", "oklch(0.72 0.003 90)", "oklch(0.84 0.003 90)", "oklch(0.95 0.003 90)"] },
+      "accent": { "role": "primary", "displayName": "Proof Paper", "canonical": "oklch(0.96 0.006 90)", "tonalRamp": ["oklch(0.15 0.006 90)", "oklch(0.26 0.006 90)", "oklch(0.38 0.006 90)", "oklch(0.49 0.006 90)", "oklch(0.61 0.006 90)", "oklch(0.72 0.006 90)", "oklch(0.84 0.006 90)", "oklch(0.95 0.006 90)"] },
+      "accent-strong": { "role": "primary", "displayName": "Pure Sheet", "canonical": "oklch(1 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "accent-fg": { "role": "primary", "displayName": "Press Black Ink", "canonical": "oklch(0.18 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "accent-soft": { "role": "primary", "displayName": "Paper Tint", "canonical": "oklch(1 0 0 / 0.1)" },
+      "ink": { "role": "neutral", "displayName": "Key Black", "canonical": "oklch(0.14 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.38 0 0)", "oklch(0.49 0 0)", "oklch(0.61 0 0)", "oklch(0.72 0 0)", "oklch(0.84 0 0)", "oklch(0.95 0 0)"] },
+      "cyan": { "role": "secondary", "displayName": "Process Cyan (Pro)", "canonical": "oklch(0.74 0.13 225)", "tonalRamp": ["oklch(0.15 0.13 225)", "oklch(0.26 0.13 225)", "oklch(0.38 0.13 225)", "oklch(0.49 0.13 225)", "oklch(0.61 0.13 225)", "oklch(0.72 0.13 225)", "oklch(0.84 0.13 225)", "oklch(0.95 0.13 225)"] },
+      "magenta": { "role": "tertiary", "displayName": "Process Magenta (Ultra, registration)", "canonical": "oklch(0.66 0.26 350)", "tonalRamp": ["oklch(0.15 0.26 350)", "oklch(0.26 0.26 350)", "oklch(0.38 0.26 350)", "oklch(0.49 0.26 350)", "oklch(0.61 0.26 350)", "oklch(0.72 0.26 350)", "oklch(0.84 0.26 350)", "oklch(0.95 0.26 350)"] },
+      "yellow": { "role": "tertiary", "displayName": "Process Yellow", "canonical": "oklch(0.88 0.17 95)", "tonalRamp": ["oklch(0.15 0.17 95)", "oklch(0.26 0.17 95)", "oklch(0.38 0.17 95)", "oklch(0.49 0.17 95)", "oklch(0.61 0.17 95)", "oklch(0.72 0.17 95)", "oklch(0.84 0.17 95)", "oklch(0.95 0.17 95)"] },
+      "danger": { "role": "status", "displayName": "Proof Red", "canonical": "oklch(0.72 0.19 27)", "tonalRamp": ["oklch(0.15 0.19 27)", "oklch(0.26 0.19 27)", "oklch(0.38 0.19 27)", "oklch(0.49 0.19 27)", "oklch(0.61 0.19 27)", "oklch(0.72 0.19 27)", "oklch(0.84 0.19 27)", "oklch(0.95 0.19 27)"] },
+      "danger-soft": { "role": "status", "displayName": "Proof Red Wash", "canonical": "oklch(0.72 0.19 27 / 0.14)" },
+      "warn": { "role": "status", "displayName": "Warning Yellow", "canonical": "oklch(0.88 0.17 95)", "tonalRamp": ["oklch(0.15 0.17 95)", "oklch(0.26 0.17 95)", "oklch(0.38 0.17 95)", "oklch(0.49 0.17 95)", "oklch(0.61 0.17 95)", "oklch(0.72 0.17 95)", "oklch(0.84 0.17 95)", "oklch(0.95 0.17 95)"] },
+      "warn-soft": { "role": "status", "displayName": "Warning Wash", "canonical": "oklch(0.88 0.17 95 / 0.13)" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Landing headline only. 3rem, 3.75rem at sm, 4.5rem at lg; max 13ch, balanced." },
+      "headline": { "displayName": "Headline", "purpose": "Landing section heads and the gallery title. 1.875rem rising to 2.25rem at sm." },
+      "title": { "displayName": "Title", "purpose": "File names in the loupe and editor bar, dialog titles, empty-state heads." },
+      "body": { "displayName": "Body", "purpose": "The working UI size: controls, rows, labels, banners." },
+      "body-lead": { "displayName": "Body Lead", "purpose": "Landing intro paragraph in muted ink, max 52ch." },
+      "label": { "displayName": "Label", "purpose": "Mono uppercase tier names, control-strip cells, plan heads, on-image captions." },
+      "numeric": { "displayName": "Numeric", "purpose": "Dimensions, durations, sizes, counts, readouts and step numbers in tabular mono." }
+    },
+    "shadows": [
+      { "name": "dialog-lift", "value": "0 24px 64px -12px oklch(0 0 0 / 0.6)", "purpose": "Modal dialogs only." },
+      { "name": "toast-lift", "value": "0 12px 32px -8px oklch(0 0 0 / 0.6)", "purpose": "Notification toasts only." },
+      { "name": "crop-dim", "value": "0 0 0 100vmax oklch(0.12 0 0 / 0.62)", "purpose": "Darkens the image outside the crop box. Functional, not elevation." },
+      { "name": "dialog-backdrop", "value": "background: oklch(0.12 0 0 / 0.72); backdrop-filter: blur(6px)", "purpose": "The ::backdrop behind native dialogs." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Easing for the rise entrance (token --ease-out-expo)." },
+      { "name": "rise", "value": "0.7s ease-out-expo; from opacity 0, translateY(14px); delay calc(var(--i) * 70ms)", "purpose": "The single entrance motion: landing hero items and toasts." },
+      { "name": "hover-colour", "value": "150ms colour transition", "purpose": "Buttons, icon buttons, tabs and nav links." },
+      { "name": "progress-width", "value": "width 200ms", "purpose": "Upload progress rule." },
+      { "name": "reduced-motion", "value": "rise removed; transition-duration 0.01ms; spinners and pulses stop", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "strip-cell-count", "value": "@container 5.5rem", "purpose": "Control-strip cells show their tool count only at this cell width or wider." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one primary action on a view: paper white with black ink.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Start editing free <svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m13 6 6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 3px; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.4286; white-space: nowrap; cursor: pointer; border: 0; transition: color 150ms, background-color 150ms, border-color 150ms; } .ds-btn-primary { background: var(--color-accent); color: var(--color-accent-fg); font-weight: 600; } .ds-btn-primary:hover { background: var(--color-accent-strong); } .ds-btn:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; } .ds-btn:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting actions: Download, Upload video, Load more, banner actions.",
+      "html": "<button class=\"ds-btn2\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v12\"/><path d=\"m7 11 5 5 5-5\"/><path d=\"M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15\"/></svg>Download</button>",
+      "css": ".ds-btn2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 3px; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; background: var(--color-raised); color: var(--color-fg); border: 1px solid var(--color-line-strong); cursor: pointer; transition: background-color 150ms; } .ds-btn2:hover { background: var(--color-line); } .ds-btn2:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Header links, Cancel, Delete in the loupe: no fill until hover.",
+      "html": "<button class=\"ds-btn-ghost\">See plans</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 3px; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; background: transparent; color: var(--color-muted); border: 0; cursor: pointer; transition: color 150ms, background-color 150ms; } .ds-btn-ghost:hover { background: var(--color-raised); color: var(--color-fg); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Confirm-delete only.",
+      "html": "<button class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 16px; border-radius: 3px; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; background: var(--color-danger-soft); color: var(--color-danger); border: 1px solid color-mix(in oklab, var(--color-danger) 40%, transparent); cursor: pointer; transition: background-color 150ms; } .ds-btn-danger:hover { background: color-mix(in oklab, var(--color-danger) 25%, transparent); } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled input on a surface-grey well, with hint or error below.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-w\">Width</label><input id=\"ds-w\" class=\"ds-input\" type=\"number\" value=\"1200\"><p class=\"ds-field-hint\">Pixels. Leave empty for auto.</p></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-sans); } .ds-field-label { font-size: 0.875rem; font-weight: 500; color: var(--color-muted); } .ds-input { height: 40px; padding: 0 12px; border-radius: 3px; border: 1px solid var(--color-line-strong); background: var(--color-surface); color: var(--color-fg); font-family: var(--font-mono); font-size: 0.875rem; font-variant-numeric: tabular-nums; caret-color: var(--color-magenta); } .ds-input::placeholder { color: var(--color-subtle); } .ds-input:hover { border-color: var(--color-subtle); } .ds-input:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; } .ds-field-hint { margin: 0; font-size: 0.75rem; color: var(--color-subtle); }"
+    },
+    {
+      "name": "Tier Badge",
+      "kind": "chip",
+      "refersTo": "tier-badge",
+      "description": "A mono uppercase label led by its ink cell: Free, Pro, Ultra.",
+      "html": "<span class=\"ds-badge\"><span class=\"ds-swatch ds-swatch-free\"></span>Free</span> <span class=\"ds-badge\"><span class=\"ds-swatch ds-swatch-pro\"></span>Pro</span> <span class=\"ds-badge\"><span class=\"ds-swatch ds-swatch-ultra\"></span>Ultra</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; height: 20px; margin-right: 12px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.025em; text-transform: uppercase; color: var(--color-fg); } .ds-swatch { width: 10px; height: 10px; } .ds-swatch-free { background: var(--color-ink); box-shadow: 0 0 0 1px var(--color-line-strong); } .ds-swatch-pro { background: var(--color-cyan); } .ds-swatch-ultra { background: var(--color-magenta); }"
+    },
+    {
+      "name": "Control Strip",
+      "kind": "custom",
+      "refersTo": "control-strip-pro",
+      "description": "Signature: the plans as a press colour bar, one ink cell per tier with a zero-padded tool count. The user's plan lit, the others at 45%.",
+      "html": "<ul class=\"ds-strip\"><li class=\"ds-cell ds-cell-free\"><span>Free</span><span>06</span></li><li class=\"ds-cell ds-cell-pro ds-cell-dim\"><span>Pro</span><span>16</span></li><li class=\"ds-cell ds-cell-ultra ds-cell-dim\"><span>Ultra</span><span>23</span></li></ul>",
+      "css": ".ds-strip { display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; margin: 0; padding: 0; width: 360px; } .ds-cell { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding: 0 8px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; text-transform: uppercase; font-variant-numeric: tabular-nums; } .ds-cell-free { background: var(--color-ink); color: var(--color-fg); box-shadow: inset 0 0 0 1px var(--color-line-strong); } .ds-cell-pro { background: var(--color-cyan); color: var(--color-ink); } .ds-cell-ultra { background: var(--color-magenta); color: var(--color-ink); } .ds-cell-dim { opacity: 0.45; }"
+    },
+    {
+      "name": "Tool Rows",
+      "kind": "custom",
+      "refersTo": "tool-row",
+      "description": "Signature: ruled legend rows. Solid rule for tools you have; dashed rule, lock and tier badge for locked tools. Names stay readable.",
+      "html": "<ul class=\"ds-tools\"><li><button class=\"ds-tool\"><span class=\"ds-tool-text\"><span class=\"ds-tool-name\">Crop</span><span class=\"ds-tool-desc\">Cut the image to a box.</span></span></button></li><li><button class=\"ds-tool ds-tool-locked\"><span class=\"ds-tool-text\"><span class=\"ds-tool-name\">Remove background</span><span class=\"ds-tool-desc\">Cut the subject out with AI.</span></span><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ds-lock\" aria-hidden=\"true\"><rect x=\"5\" y=\"11\" width=\"14\" height=\"9.5\" rx=\"2\"/><path d=\"M8 11V8a4 4 0 0 1 8 0v3\"/></svg><span class=\"ds-tag\"><span class=\"ds-tag-cell\"></span>Pro</span></button></li></ul>",
+      "css": ".ds-tools { list-style: none; margin: 0; padding: 0; width: 352px; border-top: 1px solid var(--color-line-strong); font-family: var(--font-sans); } .ds-tool { display: flex; width: 100%; align-items: center; gap: 12px; padding: 10px 12px; background: transparent; border: 0; border-bottom: 1px solid var(--color-line-strong); text-align: left; cursor: pointer; color: inherit; } .ds-tool:hover { background: var(--color-raised); } .ds-tool:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; } .ds-tool-locked { border-bottom-style: dashed; } .ds-tool-text { display: flex; flex: 1; min-width: 0; flex-direction: column; } .ds-tool-name { font-size: 0.875rem; color: var(--color-fg); } .ds-tool-locked .ds-tool-name { color: var(--color-muted); } .ds-tool-desc { font-size: 0.75rem; color: var(--color-subtle); } .ds-lock { color: var(--color-subtle); flex-shrink: 0; } .ds-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.025em; text-transform: uppercase; color: var(--color-fg); } .ds-tag-cell { width: 10px; height: 10px; background: var(--color-cyan); }"
+    },
+    {
+      "name": "Group Bar",
+      "kind": "nav",
+      "refersTo": "group-bar-segment-active",
+      "description": "Slim ruled toolbar floating at the canvas foot; the active group fills paper white.",
+      "html": "<div class=\"ds-groups\" role=\"toolbar\"><button class=\"ds-group\" aria-pressed=\"true\">Adjust</button><button class=\"ds-group\">Filters</button><button class=\"ds-group\">Overlays</button><button class=\"ds-group\">AI</button><button class=\"ds-group\">Generative</button></div>",
+      "css": ".ds-groups { display: inline-flex; border: 1px solid var(--color-line-strong); background: color-mix(in oklab, var(--color-panel) 95%, transparent); } .ds-group { height: 36px; padding: 0 16px; border: 0; border-right: 1px solid var(--color-line-strong); background: transparent; color: var(--color-muted); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; cursor: pointer; } .ds-group:last-child { border-right: 0; } .ds-group:hover { background: var(--color-raised); color: var(--color-fg); } .ds-group[aria-pressed=\"true\"] { background: var(--color-fg); color: var(--color-accent-fg); } .ds-group:focus-visible { outline: 2px solid var(--color-magenta); outline-offset: 2px; }"
+    },
+    {
+      "name": "Crop-Marked Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "Signature: the focal frame of a view, a square-cut panel sheet inside eight hairline crop marks, with a mono caption under it.",
+      "html": "<figure class=\"ds-crop\"><div class=\"ds-sheet\"><span class=\"ds-caption\">Edited</span></div><figcaption class=\"ds-measure\">IMG_0412.jpg · 4032 × 3024</figcaption></figure>",
+      "css": ".ds-crop { --m: 14px; --g: 8px; --mark: var(--color-subtle); margin: 0; width: 360px; padding: calc(var(--m) + var(--g)); background: linear-gradient(var(--mark), var(--mark)) 0 calc(var(--m) + var(--g)) / var(--m) 1px no-repeat, linear-gradient(var(--mark), var(--mark)) calc(var(--m) + var(--g)) 0 / 1px var(--m) no-repeat, linear-gradient(var(--mark), var(--mark)) right calc(var(--m) + var(--g)) / var(--m) 1px no-repeat, linear-gradient(var(--mark), var(--mark)) calc(100% - var(--m) - var(--g)) 0 / 1px var(--m) no-repeat, linear-gradient(var(--mark), var(--mark)) 0 calc(100% - var(--m) - var(--g)) / var(--m) 1px no-repeat, linear-gradient(var(--mark), var(--mark)) calc(var(--m) + var(--g)) 100% / 1px var(--m) no-repeat, linear-gradient(var(--mark), var(--mark)) right calc(100% - var(--m) - var(--g)) / var(--m) 1px no-repeat, linear-gradient(var(--mark), var(--mark)) calc(100% - var(--m) - var(--g)) 100% / 1px var(--m) no-repeat; } .ds-sheet { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--color-line-strong); background: var(--color-panel); } .ds-caption { position: absolute; top: 12px; left: 12px; padding: 0 6px; background: color-mix(in oklab, var(--color-ink) 80%, transparent); color: var(--color-fg); font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; } .ds-measure { margin-top: 8px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted); font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Proof Sheet",
+    "overview": "Vyx is drawn as an offset-press proof. Every edit is a proof pulled from the press and the original is the plate that never changes. The surround is a hueless photographic grey so it never tints the picture; the ink is paper white; and colour enters only where a press puts it, as the cyan, magenta and black cells of a control strip and as the magenta of the registration target. The photograph is always the loudest thing on screen.\n\nStructure comes from rules, not boxes. Panels read as ruled legends: hairline rows, a heavier rule at the head, numerals locked in fixed tabular cells. State is carried by the form of the rule itself: a solid rule for what you have or what is stored, a dashed rule for what is locked, pending or waiting for a drop, a struck name for what failed. The primary frame on any view (the landing's tool legend, the gallery's loupe, the drop sheet, the editor canvas) sits inside eight hairline crop marks at its trim corners. With all content removed, the crop marks and the control strip still identify the product.\n\nThe density is that of a working tool: compact controls (40px), 14px body text, mono captions, and generous grey margin around the image. Motion is a single soft rise on entry and colour transitions on hover; nothing bounces. The world refuses the dark-panels-plus-neon-accent editor default, the generic SaaS card grid, and the icon-rail editor that buries the image under chrome.",
+    "keyCharacteristics": [
+      "Hueless grey surround in three steps (surface, panel, raised); zero chroma on every background.",
+      "Paper-white primary action with near-black ink; no brand hue.",
+      "Tier identity as press ink cells: black for Free, cyan for Pro, magenta for Ultra.",
+      "Rule-form state: solid, dashed, struck.",
+      "Crop marks around the focal frame; square-cut corners everywhere that matters.",
+      "Every numeral in Geist Mono with tabular figures, zero-padded where it counts order."
+    ],
+    "rules": [
+      { "name": "The Neutral Surround Rule", "body": "Every background is zero-chroma grey. Nothing behind the photograph may carry a hue, because the surround must never tint the picture.", "section": "colors" },
+      { "name": "The Ink Means Tier Rule", "body": "Black, cyan and magenta cells name Free, Pro and Ultra and nothing else. Magenta's only other job is registration (focus ring, selection, caret). The inks are never decoration, gradients or backgrounds for content.", "section": "colors" },
+      { "name": "The Paper Is the Action Rule", "body": "The one primary action on a view is paper white with black ink. There is no brand accent colour to reach for instead.", "section": "colors" },
+      { "name": "The Tabular Cell Rule", "body": "Every number sits in Geist Mono with tabular figures. Counts that carry order or tier are zero-padded to two digits (\"01\", \"02\"), and readouts that change live get a fixed-width cell so nothing jitters.", "section": "typography" },
+      { "name": "The Mono Is Print Rule", "body": "Mono marks what the press prints on the sheet (captions, measures, tier names); sans carries everything a person reads or acts on.", "section": "typography" },
+      { "name": "The Flat Sheet Rule", "body": "Surfaces at rest are flat. A frame earns its edge from a rule and its place from crop marks; shadows belong only to layers that float over the page (dialogs, toasts).", "section": "elevation" },
+      { "name": "The Square Cut Rule", "body": "Nothing exceeds a 4px radius, and anything that represents the sheet, a frame or a cell has none.", "section": "shapes" },
+      { "name": "The Rule-Form State Rule", "body": "State is drawn in the rule: solid for tools you have, stored files and an accepted upload; dashed for locked tools, processing edits and a sheet awaiting a drop; a struck name in danger for a failed edit. Locked tool names are never struck, so they stay readable.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep every background on the three zero-chroma greys (surface 0.27, panel 0.31, raised 0.37) so the photograph is the only colour in the room.",
+      "Do make the one primary action paper white with black ink (accent on accent-fg).",
+      "Do use cyan for Pro, magenta for Ultra and ink black for Free, always as a square cell or swatch.",
+      "Do draw state with the rule: solid for available or stored, dashed for locked or pending, struck name in danger for failed.",
+      "Do put the focal frame of a view inside .crop-marks, with a 1px line-strong border and square corners.",
+      "Do set every measure, count and size in Geist Mono with tabular figures, in a fixed-width cell when it changes live.",
+      "Do mark a selected frame with the 2px paper-white outline at a 2px offset.",
+      "Do keep radii at 2, 3 or 4px for controls and 0 for anything that belongs to the sheet."
+    ],
+    "donts": [
+      "Don't tint the surround or any panel with a hue, not even the brand's own inks.",
+      "Don't use cyan, magenta or yellow as decoration, gradient, glow or text colour for ordinary content.",
+      "Don't strike through locked tool names; locked rows use the dashed rule and stay readable.",
+      "Don't wrap panels in shadowed cards; legends are ruled rows on a flat sheet.",
+      "Don't mark a selected frame with a tinted fill.",
+      "Don't set numbers in proportional figures or let a live readout change width.",
+      "Don't add shadows to anything that does not float above the page."
+    ]
+  }
+}
