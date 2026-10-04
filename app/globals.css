@@ -132,5 +132,7 @@ dialog::backdrop {
   * {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+    /* Looping spinners and pulses stop; their text still says what's happening. */
+    animation-iteration-count: 1 !important;
   }
 }
